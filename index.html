@@ -13,7 +13,7 @@
     }
     *{box-sizing:border-box;margin:0;padding:0}
     body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh}
-
+ 
     /* ── SIDEBAR ── */
     .sidebar{width:232px;min-width:232px;background:var(--sidebar);border-right:1px solid var(--line);display:flex;flex-direction:column;position:fixed;inset:0 auto 0 0;overflow-y:auto;z-index:10}
     .sb-logo{padding:20px 18px;border-bottom:1px solid var(--line)}
@@ -33,10 +33,10 @@
     .stat-val{font-size:13px;font-weight:800;color:#e5edf8}
     .sb-info{margin:10px 14px;background:#101e33;border:1px solid #1d3050;border-radius:10px;padding:10px 12px;font-size:11px;color:#5a7498;display:flex;gap:8px;align-items:flex-start;line-height:1.5}
     .sb-footer{padding:12px 18px;border-top:1px solid var(--line);font-size:11px;color:#2e4560;line-height:1.6}
-
+ 
     /* ── MAIN ── */
     .main{margin-left:232px;flex:1;display:flex;flex-direction:column;min-height:100vh;background:#0d1525}
-
+ 
     /* Topbar */
     .topbar{display:flex;align-items:center;justify-content:flex-end;gap:8px;padding:13px 22px;border-bottom:1px solid var(--line);background:#0b1220;flex-wrap:wrap}
     .btn{display:inline-flex;align-items:center;gap:7px;border-radius:10px;padding:8px 15px;font-size:13px;font-weight:700;cursor:pointer;border:none;text-decoration:none;transition:filter .15s;font-family:inherit}
@@ -45,7 +45,7 @@
     .btn-secondary{background:#141f33;color:#c8d8ea;border:1px solid var(--line)}
     .btn-icon{background:#141f33;color:#c8d8ea;border:1px solid var(--line);padding:8px 10px;border-radius:10px;cursor:pointer;font-size:16px;display:inline-flex;align-items:center;font-family:inherit}
     .btn-icon:hover{filter:brightness(1.15)}
-
+ 
     /* Page header */
     .page-header{padding:20px 24px 12px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
     .page-header h2{font-size:26px;font-weight:900;color:#fff;letter-spacing:-.02em}
@@ -53,7 +53,7 @@
     .date-box{background:#111d30;border:1px solid var(--line);border-radius:9px;padding:7px 13px;display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
     .date-box svg{color:#3b82f6;flex-shrink:0}
     .date-right{display:flex;align-items:center;gap:8px}
-
+ 
     /* KPI row */
     .kpis-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;padding:4px 24px 16px}
     .kpi-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 16px 0;display:flex;flex-direction:column;overflow:hidden}
@@ -73,11 +73,11 @@
     .kpi-bar.green{background:var(--green)}
     .kpi-bar.blue{background:var(--blue)}
     .kpi-bar.purple{background:#a855f7}
-
+ 
     /* Content */
     .content{padding:0 24px 24px;flex:1}
     .content-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
-
+ 
     /* Filters */
     .filters{display:grid;grid-template-columns:2.2fr 1fr 1.1fr 1fr auto;gap:12px;align-items:end;padding:16px 18px;border-bottom:1px solid var(--line)}
     .fg label{display:block;font-size:11px;font-weight:800;color:#5a7898;margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em}
@@ -87,14 +87,14 @@
     .search-wrap .si{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#4a6080;pointer-events:none;display:flex}
     .search-wrap input{padding-left:34px}
     .fg.btn-fg{padding-top:19px}
-
+ 
     /* Tabs */
     .card-tabs{display:flex;gap:4px;padding:10px 14px;border-bottom:1px solid var(--line);background:#0e1827}
     .tab-btn{display:flex;align-items:center;gap:7px;padding:8px 15px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid transparent;background:transparent;color:#6a84a0;transition:all .15s;font-family:inherit}
     .tab-btn:hover{background:#162035;color:#c8d8ea}
     .tab-btn.active{background:#1a2f50;color:#fff;border-color:#2a4070}
     .tab-btn svg{width:14px;height:14px}
-
+ 
     /* Table */
     .tableWrap{overflow-x:auto}
     .tableWrap::-webkit-scrollbar{height:8px}
@@ -109,21 +109,21 @@
     tbody td{padding:12px 14px;color:#c8d8ea;vertical-align:middle}
     td b{color:#fff;font-weight:700}
     td .sm{font-size:11px;color:var(--muted)}
-
+ 
     /* Pills */
     .pill{border-radius:999px;padding:5px 11px;font-size:11px;font-weight:800;white-space:nowrap;display:inline-block}
     .pill.vencido{background:#3d0f0f;color:#f87171;border:1px solid #7f1d1d}
     .pill.calibrar{background:#2d1245;color:#c084fc;border:1px solid #6b21a8}
     .pill.proximo{background:#3d300a;color:#fbbf24;border:1px solid #713f12}
     .pill.tiempo{background:#0d3320;color:#4ade80;border:1px solid #14532d}
-
+ 
     .cv{font-weight:700}
     .cv.vencido{color:#f87171}.cv.calibrar{color:#c084fc}.cv.proximo{color:#fbbf24}.cv.tiempo{color:#4ade80}
-
+ 
     /* Días colors */
     .dv{font-weight:800}
     .dv.neg{color:#f87171}.dv.warn{color:#fb923c}.dv.near{color:#fbbf24}.dv.ok{color:#4ade80}
-
+ 
     /* Action icon buttons */
     .abtns{display:flex;gap:4px;align-items:center}
     .ib{width:28px;height:28px;border-radius:7px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:filter .15s;text-decoration:none;font-size:13px}
@@ -133,14 +133,14 @@
     .ib.upl{background:rgba(34,197,94,.2);color:#4ade80}
     .ib.edit{background:rgba(234,179,8,.2);color:#fbbf24}
     .ib.del{background:rgba(239,68,68,.2);color:#f87171}
-
+ 
     /* Table footer */
     .tfoot{display:flex;align-items:center;justify-content:space-between;padding:9px 16px;border-top:1px solid var(--line);background:#0e1827;font-size:12px;color:#4a6080;flex-wrap:wrap;gap:8px}
     .tfoot-info{display:flex;align-items:center;gap:6px}
     .legend{display:flex;gap:14px;flex-wrap:wrap}
     .li{display:flex;align-items:center;gap:5px;font-size:11.5px;color:#6a84a0}
     .ld{width:10px;height:10px;border-radius:50%}
-
+ 
     /* Sub sections */
     .hidden{display:none!important}
     .sub-section{padding:22px}
@@ -157,10 +157,10 @@
     .dg-group input,.dg-group textarea{width:100%;background:#0d1828;border:1px solid var(--line);border-radius:8px;padding:9px 12px;color:var(--text);font:inherit;font-size:13px;outline:none}
     .dg-group input:focus,.dg-group textarea:focus{border-color:#3b82f6}
     .dlg-actions{display:flex;gap:8px;margin-top:22px;justify-content:flex-end}
-
+ 
     /* Info circle */
     .ic{display:inline-flex;width:16px;height:16px;border-radius:50%;background:#1e3a6e;color:#60a5fa;font-size:9px;font-weight:900;align-items:center;justify-content:center;flex-shrink:0}
-
+ 
     /* Cert Drive link button */
     .cert-drive-btn{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:#60a5fa;text-decoration:none;background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.25);border-radius:8px;padding:5px 10px;transition:all .15s;white-space:nowrap;max-width:160px;overflow:hidden;text-overflow:ellipsis}
     .cert-drive-btn:hover{background:rgba(59,130,246,.2);color:#93c5fd}
@@ -172,13 +172,13 @@
     .dlg-hint-title{font-size:12px;font-weight:700;color:#60a5fa;margin-bottom:8px}
     .dlg-hint-steps{margin:0;padding-left:18px;font-size:12px;color:#7a9ab8;line-height:1.9}
     .dlg-hint-steps b{color:#c8d8ea}
-
+ 
     @media(max-width:900px){.sidebar{display:none}.main{margin-left:0}.kpis-row{grid-template-columns:repeat(2,1fr)}.filters{grid-template-columns:1fr 1fr}}
     @media print{.sidebar,.topbar,.filters,.card-tabs,.abtns{display:none!important}body{background:#fff;color:#111}.main{margin-left:0}.content-card{border:none}}
   </style>
 </head>
 <body>
-
+ 
 <!-- ══════════ SIDEBAR ══════════ -->
 <aside class="sidebar">
   <div class="sb-logo">
@@ -188,7 +188,7 @@
     <h1>Control de<br>Calibraciones</h1>
     <p class="sub">Dashboard, semáforo, certificados, respaldo y eventos de Google Calendar.</p>
   </div>
-
+ 
   <nav class="sb-nav">
     <div class="nav-item active" id="nav-dashboard" onclick="navTo('dashboard')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
@@ -207,7 +207,7 @@
       Respaldos
     </div>
   </nav>
-
+ 
   <div class="sb-stats">
     <div class="stats-title">Estadísticas rápidas</div>
     <div class="stat-row"><span class="stat-label"><span class="stat-dot" style="background:var(--red)"></span>Vencido</span><span class="stat-val" id="sv1">0</span></div>
@@ -215,20 +215,20 @@
     <div class="stat-row"><span class="stat-label"><span class="stat-dot" style="background:var(--amber)"></span>Próximo a vencer</span><span class="stat-val" id="sv3">0</span></div>
     <div class="stat-row"><span class="stat-label"><span class="stat-dot" style="background:var(--green)"></span>Con tiempo</span><span class="stat-val" id="sv4">0</span></div>
   </div>
-
+ 
   <div class="sb-info">
     <span class="ic">i</span>
     <span>Los avisos se generan 30 días antes del vencimiento y en la fecha de vencimiento.</span>
   </div>
-
+ 
   <div class="sb-footer">
     © 2025 Control de Calibraciones<br>Todos los derechos reservados.
   </div>
 </aside>
-
+ 
 <!-- ══════════ MAIN ══════════ -->
 <div class="main">
-
+ 
   <!-- Top action bar -->
   <div class="topbar">
     <button class="btn btn-primary" onclick="openForm()">
@@ -245,7 +245,7 @@
     </button>
     <input id="importFile" type="file" accept="application/json" hidden onchange="importBackup(event)">
   </div>
-
+ 
   <!-- Page header -->
   <div class="page-header">
     <div>
@@ -262,14 +262,14 @@
       </button>
     </div>
   </div>
-
+ 
   <!-- KPI Row -->
   <div class="kpis-row" id="kpis"></div>
-
+ 
   <!-- Content card -->
   <div class="content">
     <div class="content-card">
-
+ 
       <!-- Filters -->
       <div class="filters">
         <div class="fg">
@@ -313,7 +313,7 @@
           </button>
         </div>
       </div>
-
+ 
       <!-- Card tabs -->
       <div class="card-tabs">
         <button class="tab-btn active" id="tbtn-lista" onclick="showTab('lista')">
@@ -325,7 +325,7 @@
           Certificados
         </button>
       </div>
-
+ 
       <!-- Lista de equipos tab -->
       <div id="tab-lista">
         <div class="tableWrap">
@@ -362,18 +362,18 @@
           </div>
         </div>
       </div>
-
+ 
       <!-- Certificados tab -->
       <div id="tab-certificados" class="hidden sub-section">
         <h2>Certificados</h2>
         <p class="sm">Certificados vinculados desde Google Drive. Haz clic en <b>☁</b> en cualquier equipo de la tabla para agregar o editar el enlace de su certificado PDF.</p>
         <div id="certList" class="certList"></div>
       </div>
-
+ 
     </div><!-- /content-card -->
   </div><!-- /content -->
 </div><!-- /main -->
-
+ 
 <!-- ══════════ DIALOG ══════════ -->
 <dialog id="dlg">
   <form method="dialog" onsubmit="saveEquipo(event)">
@@ -403,7 +403,7 @@
     </div>
   </form>
 </dialog>
-
+ 
 <!-- ══════════ DIALOG LINK CERTIFICADO ══════════ -->
 <dialog id="dlgLink">
   <h2 style="margin-bottom:6px">
@@ -434,31 +434,33 @@
     <button class="btn btn-primary" onclick="saveCertLink()">Guardar enlace</button>
   </div>
 </dialog>
-
+ 
 <script>
 /* ══════ DATA ══════ */
 const initialEquipos = [
-  {id:'eq1',equipo:'Sonómetro',marca:'Larson Davis',modelo:'LxT1',serie:'3233',inventario:'2012010015',ultima:'2025-05-09',meses:12,aviso:30,lab:'MEYLAB',certificados:[]},
-  {id:'eq2',equipo:'Calibrador acústico para Sonómetro',marca:'Larson Davis',modelo:'CAL 200',serie:'9934',inventario:'2012010016',ultima:'2025-05-07',meses:12,aviso:30,lab:'MEYLAB',certificados:[]},
-  {id:'eq3',equipo:'Dosímetro',marca:'Larson Davis',modelo:'Spark 705+Atex',serie:'1342182',inventario:'2012010017',ultima:'2025-02-20',meses:12,aviso:30,lab:'MEYLAB',certificados:[]},
-  {id:'eq4',equipo:'Calibrador acústico para Dosímetro',marca:'Larson Davis',modelo:'CAL 150',serie:'5142',inventario:'2012010018',ultima:'2025-02-20',meses:12,aviso:30,lab:'MEYLAB',certificados:[]},
-  {id:'eq5',equipo:'Luxómetro',marca:'Extech Instruments',modelo:'407026',serie:'A.048158',inventario:'2020120010',ultima:'2022-01-06',meses:12,aviso:30,lab:'',certificados:[]},
-  {id:'eq6',equipo:'Luxómetro',marca:'Extech Instruments',modelo:'407026',serie:'Q643645',inventario:'2012010013',ultima:'2022-05-27',meses:12,aviso:30,lab:'',certificados:[]},
-  {id:'eq7',equipo:'Monitor de Stress Térmico',marca:'Quest Technologies',modelo:'QUEST temp*32',serie:'TPL110012',inventario:'2012010014',ultima:'2025-09-02',meses:12,aviso:30,lab:'CENIT',certificados:[]},
-  {id:'eq8',equipo:'Termometro de Tem. Abatidas',marca:'KESSLER',modelo:'ASTM 114C-86',serie:'799763',inventario:'2015010255',ultima:'2025-07-17',meses:12,aviso:30,lab:'SIMCA',certificados:[]},
-  {id:'eq9',equipo:'Anemometro',marca:'CEM',modelo:'DT-8897',serie:'889701/1308113433',inventario:'2014010116',ultima:'2025-09-02',meses:12,aviso:30,lab:'ICEMA',certificados:[]},
-  {id:'eq10',equipo:'Luxómetro',marca:'LUTRON',modelo:'LX-1108',serie:'T.048053',inventario:'2022010063',ultima:'2022-08-15',meses:12,aviso:30,lab:'',certificados:[]},
-  {id:'eq11',equipo:'Termohigrometro',marca:'CEM',modelo:'DT-321S',serie:'190302639',inventario:'2021010026',ultima:'2025-07-22',meses:12,aviso:30,lab:'CICCSA',certificados:[]},
-  {id:'eq12',equipo:'Luxómetro',marca:'HIOKI',modelo:'FT3424',serie:'221241289',inventario:'2023010087',ultima:'2025-07-24',meses:12,aviso:30,lab:'',certificados:[]},
-  {id:'eq13',equipo:'Bascula 100Kg',marca:'ESHER',modelo:'110-100-4050',serie:'EN7622-ESH27913',inventario:'2017010030',ultima:'2024-02-06',meses:12,aviso:30,lab:'',certificados:[]},
-  {id:'eq14',equipo:'Voltimetro caja negra',marca:'S/M',modelo:'AD16-22VAM',serie:'ICQC08419',inventario:'2022010064',ultima:'2025-02-26',meses:12,aviso:30,lab:'CLAM',certificados:[]},
-  {id:'eq15',equipo:'Voltimetro Anemometro',marca:'',modelo:'',serie:'',inventario:'202410117',ultima:'2024-08-16',meses:12,aviso:30,lab:'CLAM',certificados:[],certPendiente:true}
+  {id:'eq1',equipo:'Sonómetro',marca:'Larson Davis',modelo:'LxT1',serie:'3233',inventario:'2012010015',ultima:'2025-05-09',meses:12,aviso:30,lab:'MEYLAB',certificados:[],certLink:'',certNombre:'',notas:''},
+  {id:'eq2',equipo:'Calibrador acústico para Sonómetro',marca:'Larson Davis',modelo:'CAL 200',serie:'9934',inventario:'2012010016',ultima:'2025-05-07',meses:12,aviso:30,lab:'MEYLAB',certificados:[],certLink:'',certNombre:'',notas:''},
+  {id:'eq3',equipo:'Dosímetro',marca:'Larson Davis',modelo:'Spark 705+Atex',serie:'1342182',inventario:'2012010017',ultima:'2026-04-09',meses:12,aviso:30,lab:'MEYLAB',certificados:[],certLink:'https://drive.google.com/file/d/1ojx7NvnRxWhvWBlxDI7_uYk6M9yt-4wd/view?usp=sharing',certNombre:'Dosimetro 2026.04.09',notas:''},
+  {id:'eq4',equipo:'Calibrador acústico para Dosímetro',marca:'Larson Davis',modelo:'CAL 150',serie:'5142',inventario:'2012010018',ultima:'2026-04-07',meses:12,aviso:30,lab:'MEYLAB',certificados:[],certLink:'https://drive.google.com/file/d/1xFyquNHU74u_OZYzeTQHSWGZ_Njt3Jkp/view?usp=sharing',certNombre:'CAL150 2026.04.07',notas:''},
+  {id:'eq7',equipo:'Monitor de Stress Térmico',marca:'Quest Technologies',modelo:'QUEST temp*32',serie:'TPL110012',inventario:'2012010014',ultima:'2025-09-02',meses:12,aviso:30,lab:'CENIT',certificados:[],certLink:'https://drive.google.com/file/d/1H-b43yZ7V2Qy7QrKIx199JwOBgM8jZ38/view?usp=sharing',certNombre:'TGBH 25.09.2025',notas:''},
+  {id:'eq8',equipo:'Termometro de Tem. Abatidas',marca:'KESSLER',modelo:'ASTM 114C-86',serie:'799763',inventario:'2015010255',ultima:'2025-07-17',meses:12,aviso:30,lab:'SIMCA',certificados:[],certLink:'https://drive.google.com/file/d/1MpgJB6hbPCk-Zt0Us33JFsJcYOOIakcH/view?usp=sharing',certNombre:'2025.07.17 KESSLER',notas:''},
+  {id:'eq9',equipo:'Anemometro',marca:'CEM',modelo:'DT-8897',serie:'889701/1308113433',inventario:'2014010116',ultima:'2025-09-02',meses:12,aviso:30,lab:'ICEMA',certificados:[],certLink:'https://drive.google.com/file/d/1E0B1XeimPH7gV1cC4p2jWk4MiuhL2YUL/view?usp=sharing',certNombre:'ANEMOMETRO 02.09.2025',notas:''},
+  {id:'eq11',equipo:'Termohigrometro',marca:'CEM',modelo:'DT-321S',serie:'190302639',inventario:'2021010026',ultima:'2025-07-22',meses:12,aviso:30,lab:'CICCSA',certificados:[],certLink:'',certNombre:'',notas:''},
+  {id:'eq12',equipo:'Luxómetro',marca:'HIOKI',modelo:'FT3424',serie:'221241289',inventario:'2023010087',ultima:'2025-07-24',meses:12,aviso:30,lab:'',certificados:[],certLink:'https://drive.google.com/file/d/1PuGvr4juEXPjysWcTAVy29DICTnj8L3b/view?usp=sharing',certNombre:'Hioki 24.07.2025',notas:''},
+  {id:'eq13',equipo:'Bascula 100Kg',marca:'ESHER',modelo:'110-100-4050',serie:'EN7622-ESH27913',inventario:'2017010030',ultima:'2024-02-06',meses:12,aviso:30,lab:'',certificados:[],certLink:'',certNombre:'',notas:''},
+  {id:'eq14',equipo:'Voltimetro caja negra',marca:'S/M',modelo:'AD16-22VAM',serie:'ICQC08419',inventario:'2022010064',ultima:'2025-02-26',meses:12,aviso:30,lab:'CLAM',certificados:[],certLink:'https://drive.google.com/file/d/1xLkyQ58gy9r8rNHzvpmIbzLgzBPfZ84J/view?usp=sharing',certNombre:'2025.02.26_CLAM-00967-25',notas:''},
+  {id:'eq15',equipo:'Voltimetro Anemometro',marca:'',modelo:'',serie:'',inventario:'202410117',ultima:'2024-08-16',meses:24,aviso:30,lab:'CLAM',certificados:[],certLink:'https://drive.google.com/file/d/1N68N_G3Jpt0s5wZN50d1TxmEsLqEHrdg/view?usp=sharing',certNombre:'VOLTMETRO 2024.08.16',notas:''}
 ];
-
+ 
+const DATA_VERSION = '2026-05-07';
+if(localStorage.getItem('calibracionesVersion') !== DATA_VERSION){
+  localStorage.removeItem('calibracionesEquipos');
+  localStorage.setItem('calibracionesVersion', DATA_VERSION);
+}
 let equipos = JSON.parse(localStorage.getItem('calibracionesEquipos')||'null') || initialEquipos;
 let config  = JSON.parse(localStorage.getItem('calibracionesConfig')||'{}');
 let _sortCol = 'vencimiento', _sortDir = 1;
-
+ 
 function save(){ localStorage.setItem('calibracionesEquipos', JSON.stringify(equipos)); }
 function today(){ const d=new Date(); d.setHours(0,0,0,0); return d; }
 function addMonths(dateStr, months){
@@ -485,7 +487,7 @@ function gcalUrl(e, tipo){
   const details=`Equipo: ${e.equipo}\nMarca: ${e.marca||''}\nModelo: ${e.modelo||''}\nSerie: ${e.serie||''}\nLAB: ${e.lab||''}`;
   return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${start}/${fmt(end).replaceAll('-','')}&details=${encodeURIComponent(details)}`;
 }
-
+ 
 /* ══════ CLOCK ══════ */
 function updateClock(){
   const now=new Date();
@@ -495,7 +497,7 @@ function updateClock(){
   const fmt2=(d)=>d.toLocaleDateString('es-MX',{day:'numeric',month:'long',year:'numeric'});
   document.getElementById('footer-date').textContent = 'Los días se calculan respecto a la fecha actual: '+fmt2(now);
 }
-
+ 
 /* ══════ LAB FILTER POPULATE ══════ */
 function populateLabFilter(){
   const sel=document.getElementById('fLab');
@@ -505,7 +507,7 @@ function populateLabFilter(){
   labs.forEach(l=>{ const o=document.createElement('option'); o.value=l; o.textContent=l; sel.appendChild(o); });
   sel.value=cur;
 }
-
+ 
 /* ══════ CLEAR FILTERS ══════ */
 function clearFilters(){
   document.getElementById('q').value='';
@@ -515,20 +517,20 @@ function clearFilters(){
   _sortCol='vencimiento'; _sortDir=1;
   render();
 }
-
+ 
 /* ══════ SORT COLUMN ══════ */
 function sortCol(col){
   if(_sortCol===col) _sortDir*=-1; else { _sortCol=col; _sortDir=1; }
   render();
 }
-
+ 
 /* ══════ RENDER ══════ */
 function render(){
   const q=document.getElementById('q').value.toLowerCase();
   const f=document.getElementById('fEstado').value;
   const s=document.getElementById('sort').value;
   const fLab=document.getElementById('fLab').value;
-
+ 
   let rows=equipos.map(e=>({
     ...e,
     venc:addMonths(e.ultima,e.meses),
@@ -538,7 +540,7 @@ function render(){
   .filter(e=>!q||Object.values(e).join(' ').toLowerCase().includes(q))
   .filter(e=>!f||e.est[0]===f)
   .filter(e=>!fLab||(e.labDisplay===fLab));
-
+ 
   // Sort
   const col=_sortCol||s;
   rows.sort((a,b)=>{
@@ -552,20 +554,20 @@ function render(){
     if(va>vb) return _sortDir;
     return 0;
   });
-
+ 
   document.getElementById('tbody').innerHTML = rows.map(e=>{
     const dias=daysUntil(e.venc);
     const estClass=e.est[1];
-
+ 
     // Vencimiento color class
     const cv=estClass;
-
+ 
     // Days color
     let dc='ok';
     if(dias<0) dc='neg';
     else if(dias<=30) dc='warn';
     else if(dias<=60) dc='near';
-
+ 
     // Cert cell
     let certHtml;
     if(e.certLink){
@@ -576,7 +578,7 @@ function render(){
     } else {
       certHtml=`<span class="no-cert">Sin certificado</span>`;
     }
-
+ 
     return `<tr>
       <td><span class="pill ${estClass}">${e.est[0]}</span></td>
       <td><b>${e.equipo}</b></td>
@@ -610,11 +612,11 @@ function render(){
       </td>
     </tr>`;
   }).join('');
-
+ 
   renderKpis();
   renderCerts();
 }
-
+ 
 /* ══════ KPIs ══════ */
 function renderKpis(){
   const C={'Vencido':0,'Calibrar ya':0,'Próximo a vencer':0,'Con tiempo':0};
@@ -640,7 +642,7 @@ function renderKpis(){
   const keys=['Vencido','Calibrar ya','Próximo a vencer','Con tiempo'];
   ids.forEach((id,i)=>document.getElementById(id).textContent=C[keys[i]]);
 }
-
+ 
 /* ══════ CERTS ══════ */
 function renderCerts(){
   const conLink=equipos.filter(e=>e.certLink);
@@ -663,7 +665,7 @@ function renderCerts(){
   });
   document.getElementById('certList').innerHTML=html||'<p class="sm" style="padding:8px 0">Aún no hay certificados vinculados. Usa el botón ☁ en cada equipo para agregar el enlace de Google Drive.</p>';
 }
-
+ 
 /* ══════ CERT LINK DIALOG ══════ */
 function openLinkDialog(id){
   const e=equipos.find(x=>x.id===id)||{};
@@ -694,7 +696,7 @@ function showTab(t){
     document.getElementById('tbtn-'+x).classList.toggle('active',x===t);
   });
 }
-
+ 
 /* ══════ NAV ══════ */
 function navTo(target){
   ['dashboard','lista','certificados','respaldos'].forEach(n=>{
@@ -706,7 +708,7 @@ function navTo(target){
   else if(target==='respaldos')    exportBackup();
   else                             showTab('lista'); // dashboard
 }
-
+ 
 /* ══════ FORM ══════ */
 function openForm(id){
   const e=id?equipos.find(x=>x.id===id):{};
@@ -718,7 +720,7 @@ function openForm(id){
   if(!id){ document.getElementById('meses').value=12; document.getElementById('aviso').value=30; }
   dlg.showModal();
 }
-
+ 
 function saveEquipo(ev){
   ev.preventDefault();
   const id=document.getElementById('editId').value||('eq'+Date.now());
@@ -733,7 +735,7 @@ function saveEquipo(ev){
   if(!equipos.some(x=>x.id===id)) equipos.push(e);
   save(); dlg.close(); populateLabFilter(); render();
 }
-
+ 
 /* ══════ BACKUP ══════ */
 function exportBackup(){
   const blob=new Blob([JSON.stringify({equipos,config,fecha:new Date().toISOString()},null,2)],{type:'application/json'});
