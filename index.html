@@ -1,0 +1,758 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Control de Calibraciones</title>
+  <style>
+    :root{
+      --bg:#0b1220;--sidebar:#0d1525;--card:#111d30;--card2:#0e1827;
+      --text:#e5edf8;--muted:#7a8fa6;--line:#1e2d42;
+      --red:#ef4444;--orange:#f97316;--amber:#eab308;--green:#22c55e;--blue:#3b82f6;--purple:#a855f7;
+      --radius:14px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh}
+
+    /* ── SIDEBAR ── */
+    .sidebar{width:232px;min-width:232px;background:var(--sidebar);border-right:1px solid var(--line);display:flex;flex-direction:column;position:fixed;inset:0 auto 0 0;overflow-y:auto;z-index:10}
+    .sb-logo{padding:20px 18px;border-bottom:1px solid var(--line)}
+    .sb-logo .logo-box{width:46px;height:46px;background:linear-gradient(135deg,#1a3a6e,#2563eb);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:12px}
+    .sb-logo h1{font-size:14.5px;font-weight:800;color:#fff;line-height:1.25}
+    .sb-logo .sub{font-size:11px;color:var(--muted);margin-top:5px;line-height:1.5}
+    .sb-nav{padding:10px 10px;flex:1}
+    .nav-item{display:flex;align-items:center;gap:10px;padding:9px 13px;border-radius:10px;cursor:pointer;color:#7a8fa6;font-size:13px;font-weight:600;transition:all .15s;margin-bottom:2px;user-select:none}
+    .nav-item:hover{background:#162035;color:#c8d8ea}
+    .nav-item.active{background:#1e3060;color:#fff}
+    .nav-item svg{width:16px;height:16px;flex-shrink:0}
+    .sb-stats{padding:14px 18px;border-top:1px solid var(--line)}
+    .stats-title{font-size:10px;font-weight:800;color:#3d5570;letter-spacing:.09em;text-transform:uppercase;margin-bottom:10px}
+    .stat-row{display:flex;align-items:center;justify-content:space-between;padding:4px 0}
+    .stat-label{display:flex;align-items:center;gap:8px;font-size:12.5px;color:#7a8fa6}
+    .stat-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+    .stat-val{font-size:13px;font-weight:800;color:#e5edf8}
+    .sb-info{margin:10px 14px;background:#101e33;border:1px solid #1d3050;border-radius:10px;padding:10px 12px;font-size:11px;color:#5a7498;display:flex;gap:8px;align-items:flex-start;line-height:1.5}
+    .sb-footer{padding:12px 18px;border-top:1px solid var(--line);font-size:11px;color:#2e4560;line-height:1.6}
+
+    /* ── MAIN ── */
+    .main{margin-left:232px;flex:1;display:flex;flex-direction:column;min-height:100vh;background:#0d1525}
+
+    /* Topbar */
+    .topbar{display:flex;align-items:center;justify-content:flex-end;gap:8px;padding:13px 22px;border-bottom:1px solid var(--line);background:#0b1220;flex-wrap:wrap}
+    .btn{display:inline-flex;align-items:center;gap:7px;border-radius:10px;padding:8px 15px;font-size:13px;font-weight:700;cursor:pointer;border:none;text-decoration:none;transition:filter .15s;font-family:inherit}
+    .btn:hover{filter:brightness(1.12)}
+    .btn-primary{background:#2563eb;color:#fff}
+    .btn-secondary{background:#141f33;color:#c8d8ea;border:1px solid var(--line)}
+    .btn-icon{background:#141f33;color:#c8d8ea;border:1px solid var(--line);padding:8px 10px;border-radius:10px;cursor:pointer;font-size:16px;display:inline-flex;align-items:center;font-family:inherit}
+    .btn-icon:hover{filter:brightness(1.15)}
+
+    /* Page header */
+    .page-header{padding:20px 24px 12px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .page-header h2{font-size:26px;font-weight:900;color:#fff;letter-spacing:-.02em}
+    .page-header .sub{font-size:13px;color:var(--muted);margin-top:4px}
+    .date-box{background:#111d30;border:1px solid var(--line);border-radius:9px;padding:7px 13px;display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+    .date-box svg{color:#3b82f6;flex-shrink:0}
+    .date-right{display:flex;align-items:center;gap:8px}
+
+    /* KPI row */
+    .kpis-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;padding:4px 24px 16px}
+    .kpi-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 16px 0;display:flex;flex-direction:column;overflow:hidden}
+    .kpi-title{font-size:12px;font-weight:600;color:#8ea3be;margin-bottom:10px}
+    .kpi-body{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+    .kpi-icon{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+    .kpi-icon.red{background:rgba(239,68,68,.15);color:var(--red)}
+    .kpi-icon.amber{background:rgba(234,179,8,.15);color:var(--amber)}
+    .kpi-icon.green{background:rgba(34,197,94,.15);color:var(--green)}
+    .kpi-icon.blue{background:rgba(59,130,246,.15);color:var(--blue)}
+    .kpi-icon.purple{background:rgba(168,85,247,.15);color:#a855f7}
+    .kpi-num{font-size:34px;font-weight:900;color:#fff;line-height:1}
+    .kpi-desc{font-size:11.5px;color:var(--muted);margin-bottom:12px}
+    .kpi-bar{height:3px;margin-top:auto}
+    .kpi-bar.red{background:var(--red)}
+    .kpi-bar.amber{background:var(--amber)}
+    .kpi-bar.green{background:var(--green)}
+    .kpi-bar.blue{background:var(--blue)}
+    .kpi-bar.purple{background:#a855f7}
+
+    /* Content */
+    .content{padding:0 24px 24px;flex:1}
+    .content-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+
+    /* Filters */
+    .filters{display:grid;grid-template-columns:2.2fr 1fr 1.1fr 1fr auto;gap:12px;align-items:end;padding:16px 18px;border-bottom:1px solid var(--line)}
+    .fg label{display:block;font-size:11px;font-weight:800;color:#5a7898;margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em}
+    .fg input,.fg select{width:100%;background:#0d1828;border:1px solid #1e2d42;border-radius:8px;padding:8px 12px;color:var(--text);font:inherit;font-size:13px;outline:none;transition:border-color .15s}
+    .fg input:focus,.fg select:focus{border-color:#3b82f6}
+    .search-wrap{position:relative}
+    .search-wrap .si{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#4a6080;pointer-events:none;display:flex}
+    .search-wrap input{padding-left:34px}
+    .fg.btn-fg{padding-top:19px}
+
+    /* Tabs */
+    .card-tabs{display:flex;gap:4px;padding:10px 14px;border-bottom:1px solid var(--line);background:#0e1827}
+    .tab-btn{display:flex;align-items:center;gap:7px;padding:8px 15px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid transparent;background:transparent;color:#6a84a0;transition:all .15s;font-family:inherit}
+    .tab-btn:hover{background:#162035;color:#c8d8ea}
+    .tab-btn.active{background:#1a2f50;color:#fff;border-color:#2a4070}
+    .tab-btn svg{width:14px;height:14px}
+
+    /* Table */
+    .tableWrap{overflow-x:auto}
+    .tableWrap::-webkit-scrollbar{height:8px}
+    .tableWrap::-webkit-scrollbar-thumb{background:#2b3a55;border-radius:99px}
+    .tableWrap::-webkit-scrollbar-track{background:#0b1220}
+    table{border-collapse:collapse;width:100%;min-width:1100px;font-size:13px}
+    thead th{background:#0e1827;color:#6a84a0;font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:11px 14px;border-bottom:1px solid var(--line);white-space:nowrap;cursor:pointer;user-select:none;text-align:left}
+    thead th:hover{color:#c8d8ea}
+    .sort-arrow{margin-left:4px;opacity:.45;font-size:10px}
+    tbody tr{border-bottom:1px solid #182638;transition:background .1s}
+    tbody tr:hover{background:#12203a}
+    tbody td{padding:12px 14px;color:#c8d8ea;vertical-align:middle}
+    td b{color:#fff;font-weight:700}
+    td .sm{font-size:11px;color:var(--muted)}
+
+    /* Pills */
+    .pill{border-radius:999px;padding:5px 11px;font-size:11px;font-weight:800;white-space:nowrap;display:inline-block}
+    .pill.vencido{background:#3d0f0f;color:#f87171;border:1px solid #7f1d1d}
+    .pill.calibrar{background:#2d1245;color:#c084fc;border:1px solid #6b21a8}
+    .pill.proximo{background:#3d300a;color:#fbbf24;border:1px solid #713f12}
+    .pill.tiempo{background:#0d3320;color:#4ade80;border:1px solid #14532d}
+
+    .cv{font-weight:700}
+    .cv.vencido{color:#f87171}.cv.calibrar{color:#c084fc}.cv.proximo{color:#fbbf24}.cv.tiempo{color:#4ade80}
+
+    /* Días colors */
+    .dv{font-weight:800}
+    .dv.neg{color:#f87171}.dv.warn{color:#fb923c}.dv.near{color:#fbbf24}.dv.ok{color:#4ade80}
+
+    /* Action icon buttons */
+    .abtns{display:flex;gap:4px;align-items:center}
+    .ib{width:28px;height:28px;border-radius:7px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:filter .15s;text-decoration:none;font-size:13px}
+    .ib:hover{filter:brightness(1.25)}
+    .ib.view{background:rgba(59,130,246,.2);color:#60a5fa}
+    .ib.cal{background:rgba(20,184,166,.2);color:#2dd4bf}
+    .ib.upl{background:rgba(34,197,94,.2);color:#4ade80}
+    .ib.edit{background:rgba(234,179,8,.2);color:#fbbf24}
+    .ib.del{background:rgba(239,68,68,.2);color:#f87171}
+
+    /* Table footer */
+    .tfoot{display:flex;align-items:center;justify-content:space-between;padding:9px 16px;border-top:1px solid var(--line);background:#0e1827;font-size:12px;color:#4a6080;flex-wrap:wrap;gap:8px}
+    .tfoot-info{display:flex;align-items:center;gap:6px}
+    .legend{display:flex;gap:14px;flex-wrap:wrap}
+    .li{display:flex;align-items:center;gap:5px;font-size:11.5px;color:#6a84a0}
+    .ld{width:10px;height:10px;border-radius:50%}
+
+    /* Sub sections */
+    .hidden{display:none!important}
+    .sub-section{padding:22px}
+    .sub-section h2{font-size:18px;font-weight:800;margin-bottom:6px}
+    .certList{display:grid;gap:10px;margin-top:16px}
+    .certItem{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#0d1728;border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+    /* Dialog */
+    dialog{border:1px solid var(--line);border-radius:18px;box-shadow:0 24px 80px rgba(0,0,0,.65);max-width:780px;width:calc(100% - 24px);background:#111827;color:var(--text);padding:26px}
+    dialog::backdrop{background:rgba(2,6,23,.8)}
+    dialog h2{font-size:20px;font-weight:800;margin-bottom:20px}
+    .dg{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .dg .dw{grid-column:1/-1}
+    .dg-group label{display:block;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em}
+    .dg-group input,.dg-group textarea{width:100%;background:#0d1828;border:1px solid var(--line);border-radius:8px;padding:9px 12px;color:var(--text);font:inherit;font-size:13px;outline:none}
+    .dg-group input:focus,.dg-group textarea:focus{border-color:#3b82f6}
+    .dlg-actions{display:flex;gap:8px;margin-top:22px;justify-content:flex-end}
+
+    /* Info circle */
+    .ic{display:inline-flex;width:16px;height:16px;border-radius:50%;background:#1e3a6e;color:#60a5fa;font-size:9px;font-weight:900;align-items:center;justify-content:center;flex-shrink:0}
+
+    /* Cert Drive link button */
+    .cert-drive-btn{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:#60a5fa;text-decoration:none;background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.25);border-radius:8px;padding:5px 10px;transition:all .15s;white-space:nowrap;max-width:160px;overflow:hidden;text-overflow:ellipsis}
+    .cert-drive-btn:hover{background:rgba(59,130,246,.2);color:#93c5fd}
+    .cert-drive-btn svg{flex-shrink:0}
+    /* Cert hint inside form */
+    .cert-hint{font-size:11px;color:#4a6a8a;margin-top:5px;line-height:1.5}
+    /* dlgLink hint box */
+    .dlg-hint-box{background:#0d1828;border:1px solid #1e3050;border-radius:10px;padding:12px 16px;margin-bottom:18px}
+    .dlg-hint-title{font-size:12px;font-weight:700;color:#60a5fa;margin-bottom:8px}
+    .dlg-hint-steps{margin:0;padding-left:18px;font-size:12px;color:#7a9ab8;line-height:1.9}
+    .dlg-hint-steps b{color:#c8d8ea}
+
+    @media(max-width:900px){.sidebar{display:none}.main{margin-left:0}.kpis-row{grid-template-columns:repeat(2,1fr)}.filters{grid-template-columns:1fr 1fr}}
+    @media print{.sidebar,.topbar,.filters,.card-tabs,.abtns{display:none!important}body{background:#fff;color:#111}.main{margin-left:0}.content-card{border:none}}
+  </style>
+</head>
+<body>
+
+<!-- ══════════ SIDEBAR ══════════ -->
+<aside class="sidebar">
+  <div class="sb-logo">
+    <div class="logo-box">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="4" rx="1"/><path d="M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><path d="M9 12h6M9 16h4"/></svg>
+    </div>
+    <h1>Control de<br>Calibraciones</h1>
+    <p class="sub">Dashboard, semáforo, certificados, respaldo y eventos de Google Calendar.</p>
+  </div>
+
+  <nav class="sb-nav">
+    <div class="nav-item active" id="nav-dashboard" onclick="navTo('dashboard')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </div>
+    <div class="nav-item" id="nav-lista" onclick="navTo('lista')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="3" cy="6" r="1"/><circle cx="3" cy="12" r="1"/><circle cx="3" cy="18" r="1"/></svg>
+      Lista de equipos
+    </div>
+    <div class="nav-item" id="nav-certificados" onclick="navTo('certificados')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="12" y2="17"/></svg>
+      Certificados
+    </div>
+    <div class="nav-item" id="nav-respaldos" onclick="navTo('respaldos')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Respaldos
+    </div>
+  </nav>
+
+  <div class="sb-stats">
+    <div class="stats-title">Estadísticas rápidas</div>
+    <div class="stat-row"><span class="stat-label"><span class="stat-dot" style="background:var(--red)"></span>Vencido</span><span class="stat-val" id="sv1">0</span></div>
+    <div class="stat-row"><span class="stat-label"><span class="stat-dot" style="background:#a855f7"></span>Calibrar ya</span><span class="stat-val" id="sv2">0</span></div>
+    <div class="stat-row"><span class="stat-label"><span class="stat-dot" style="background:var(--amber)"></span>Próximo a vencer</span><span class="stat-val" id="sv3">0</span></div>
+    <div class="stat-row"><span class="stat-label"><span class="stat-dot" style="background:var(--green)"></span>Con tiempo</span><span class="stat-val" id="sv4">0</span></div>
+  </div>
+
+  <div class="sb-info">
+    <span class="ic">i</span>
+    <span>Los avisos se generan 30 días antes del vencimiento y en la fecha de vencimiento.</span>
+  </div>
+
+  <div class="sb-footer">
+    © 2025 Control de Calibraciones<br>Todos los derechos reservados.
+  </div>
+</aside>
+
+<!-- ══════════ MAIN ══════════ -->
+<div class="main">
+
+  <!-- Top action bar -->
+  <div class="topbar">
+    <button class="btn btn-primary" onclick="openForm()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Agregar equipo
+    </button>
+    <button class="btn btn-secondary" onclick="exportBackup()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Exportar respaldo
+    </button>
+    <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      Importar respaldo
+    </button>
+    <input id="importFile" type="file" accept="application/json" hidden onchange="importBackup(event)">
+  </div>
+
+  <!-- Page header -->
+  <div class="page-header">
+    <div>
+      <h2>Dashboard</h2>
+      <p class="sub">Resumen general del estado de tus equipos</p>
+    </div>
+    <div class="date-right">
+      <div class="date-box">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span id="display-date"></span>&nbsp;&nbsp;<span id="display-time"></span>
+      </div>
+      <button class="btn-icon" onclick="updateClock();render()" title="Actualizar">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.5"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- KPI Row -->
+  <div class="kpis-row" id="kpis"></div>
+
+  <!-- Content card -->
+  <div class="content">
+    <div class="content-card">
+
+      <!-- Filters -->
+      <div class="filters">
+        <div class="fg">
+          <label>Buscar</label>
+          <div class="search-wrap">
+            <span class="si">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </span>
+            <input id="q" placeholder="Buscar por equipo, marca, modelo, serie, inventario..." oninput="render()">
+          </div>
+        </div>
+        <div class="fg">
+          <label>Estado</label>
+          <select id="fEstado" onchange="render()">
+            <option value="">Todos</option>
+            <option>Vencido</option>
+            <option>Calibrar ya</option>
+            <option>Próximo a vencer</option>
+            <option>Con tiempo</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>Ordenar por</label>
+          <select id="sort" onchange="render()">
+            <option value="vencimiento">Fecha vencimiento</option>
+            <option value="equipo">Equipo</option>
+            <option value="estado">Estado</option>
+            <option value="lab">Laboratorio</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>Laboratorio</label>
+          <select id="fLab" onchange="render()">
+            <option value="">Todos</option>
+          </select>
+        </div>
+        <div class="fg btn-fg">
+          <button class="btn btn-secondary" onclick="clearFilters()" style="white-space:nowrap;padding:8px 13px">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            Limpiar filtros
+          </button>
+        </div>
+      </div>
+
+      <!-- Card tabs -->
+      <div class="card-tabs">
+        <button class="tab-btn active" id="tbtn-lista" onclick="showTab('lista')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="3" cy="6" r="1"/><circle cx="3" cy="12" r="1"/><circle cx="3" cy="18" r="1"/></svg>
+          Lista de equipos
+        </button>
+        <button class="tab-btn" id="tbtn-certificados" onclick="showTab('certificados')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Certificados
+        </button>
+      </div>
+
+      <!-- Lista de equipos tab -->
+      <div id="tab-lista">
+        <div class="tableWrap">
+          <table>
+            <thead>
+              <tr>
+                <th onclick="sortCol('estado')">Estado <span class="sort-arrow">⇅</span></th>
+                <th onclick="sortCol('equipo')">Equipo <span class="sort-arrow">⇅</span></th>
+                <th onclick="sortCol('marca')">Marca / Modelo <span class="sort-arrow">⇅</span></th>
+                <th onclick="sortCol('serie')">Serie <span class="sort-arrow">⇅</span></th>
+                <th onclick="sortCol('inventario')">Inventario <span class="sort-arrow">⇅</span></th>
+                <th onclick="sortCol('ultima')">Última calibración <span class="sort-arrow">⇅</span></th>
+                <th onclick="sortCol('meses')">Frecuencia <span class="sort-arrow">⇅</span></th>
+                <th onclick="sortCol('vencimiento')">Vencimiento <span class="sort-arrow">⇅</span></th>
+                <th onclick="sortCol('dias')">Días <span class="sort-arrow">⇅</span></th>
+                <th onclick="sortCol('lab')">LAB <span class="sort-arrow">⇅</span></th>
+                <th>Certificado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+        <div class="tfoot">
+          <div class="tfoot-info">
+            <span class="ic">i</span>
+            <span id="footer-date">Los días se calculan respecto a la fecha actual</span>
+          </div>
+          <div class="legend">
+            <span class="li"><span class="ld" style="background:var(--red)"></span>Vencido</span>
+            <span class="li"><span class="ld" style="background:#a855f7"></span>Calibrar ya</span>
+            <span class="li"><span class="ld" style="background:var(--amber)"></span>Próximo a vencer</span>
+            <span class="li"><span class="ld" style="background:var(--green)"></span>Con tiempo</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Certificados tab -->
+      <div id="tab-certificados" class="hidden sub-section">
+        <h2>Certificados</h2>
+        <p class="sm">Certificados vinculados desde Google Drive. Haz clic en <b>☁</b> en cualquier equipo de la tabla para agregar o editar el enlace de su certificado PDF.</p>
+        <div id="certList" class="certList"></div>
+      </div>
+
+    </div><!-- /content-card -->
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- ══════════ DIALOG ══════════ -->
+<dialog id="dlg">
+  <form method="dialog" onsubmit="saveEquipo(event)">
+    <h2 id="dlgTitle">Equipo</h2>
+    <input id="editId" type="hidden">
+    <div class="dg">
+      <div class="dg-group"><label>Equipo</label><input id="equipo" required></div>
+      <div class="dg-group"><label>Marca</label><input id="marca"></div>
+      <div class="dg-group"><label>Modelo</label><input id="modelo"></div>
+      <div class="dg-group"><label>No. Serie</label><input id="serie"></div>
+      <div class="dg-group"><label>No. Inventario</label><input id="inventario"></div>
+      <div class="dg-group"><label>LAB</label><input id="lab"></div>
+      <div class="dg-group"><label>Fecha última calibración</label><input id="ultima" type="date" required></div>
+      <div class="dg-group"><label>Frecuencia en meses</label><input id="meses" type="number" min="1" value="12" required></div>
+      <div class="dg-group"><label>Días de aviso previo</label><input id="aviso" type="number" min="1" value="30" required></div>
+      <div class="dg-group dw">
+        <label>Enlace del certificado en Google Drive</label>
+        <input id="certLink" type="url" placeholder="https://drive.google.com/file/d/...">
+        <div class="cert-hint">Obtén el enlace en Drive: clic derecho sobre el PDF → "Obtener enlace" → "Cualquiera con el enlace"</div>
+      </div>
+      <div class="dg-group dw"><label>Nombre a mostrar del certificado</label><input id="certNombre" placeholder="ej: cert_sonometro_2025.pdf"></div>
+      <div class="dg-group dw"><label>Notas</label><textarea id="notas" rows="3"></textarea></div>
+    </div>
+    <div class="dlg-actions">
+      <button class="btn btn-secondary" type="button" onclick="dlg.close()">Cancelar</button>
+      <button class="btn btn-primary" type="submit">Guardar</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- ══════════ DIALOG LINK CERTIFICADO ══════════ -->
+<dialog id="dlgLink">
+  <h2 style="margin-bottom:6px">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" style="vertical-align:middle;margin-right:8px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/></svg>
+    Enlace de certificado · Google Drive
+  </h2>
+  <div class="dlg-hint-box">
+    <div class="dlg-hint-title">📋 ¿Cómo obtener el enlace?</div>
+    <ol class="dlg-hint-steps">
+      <li>Sube el PDF a tu <b>Google Drive</b></li>
+      <li>Clic derecho sobre el archivo → <b>"Obtener enlace"</b></li>
+      <li>Cambia el acceso a <b>"Cualquiera con el enlace"</b></li>
+      <li>Haz clic en <b>"Copiar enlace"</b> y pégalo abajo</li>
+    </ol>
+  </div>
+  <input id="dlgLinkId" type="hidden">
+  <div class="dg-group" style="margin-bottom:14px">
+    <label style="display:block;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em">Enlace de Google Drive</label>
+    <input id="dlgLinkUrl" type="url" placeholder="https://drive.google.com/file/d/..." style="width:100%;background:#0d1828;border:1px solid var(--line);border-radius:8px;padding:9px 12px;color:var(--text);font:inherit;font-size:13px;outline:none">
+  </div>
+  <div class="dg-group" style="margin-bottom:6px">
+    <label style="display:block;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em">Nombre a mostrar <span style="font-weight:400;text-transform:none">(opcional)</span></label>
+    <input id="dlgLinkNombre" placeholder="ej: cert_sonometro_MEYLAB_2025.pdf" style="width:100%;background:#0d1828;border:1px solid var(--line);border-radius:8px;padding:9px 12px;color:var(--text);font:inherit;font-size:13px;outline:none">
+  </div>
+  <div class="dlg-actions">
+    <button id="dlgLinkQuitar" class="btn" style="background:#2d0f0f;border:1px solid #7f1d1d;color:#f87171;margin-right:auto;display:none" onclick="deleteCertLink(document.getElementById('dlgLinkId').value);dlgLink.close()">Quitar enlace</button>
+    <button class="btn btn-secondary" onclick="dlgLink.close()">Cancelar</button>
+    <button class="btn btn-primary" onclick="saveCertLink()">Guardar enlace</button>
+  </div>
+</dialog>
+
+<script>
+/* ══════ DATA ══════ */
+const initialEquipos = [
+  {id:'eq1',equipo:'Sonómetro',marca:'Larson Davis',modelo:'LxT1',serie:'3233',inventario:'2012010015',ultima:'2025-05-09',meses:12,aviso:30,lab:'MEYLAB',certificados:[]},
+  {id:'eq2',equipo:'Calibrador acústico para Sonómetro',marca:'Larson Davis',modelo:'CAL 200',serie:'9934',inventario:'2012010016',ultima:'2025-05-07',meses:12,aviso:30,lab:'MEYLAB',certificados:[]},
+  {id:'eq3',equipo:'Dosímetro',marca:'Larson Davis',modelo:'Spark 705+Atex',serie:'1342182',inventario:'2012010017',ultima:'2025-02-20',meses:12,aviso:30,lab:'MEYLAB',certificados:[]},
+  {id:'eq4',equipo:'Calibrador acústico para Dosímetro',marca:'Larson Davis',modelo:'CAL 150',serie:'5142',inventario:'2012010018',ultima:'2025-02-20',meses:12,aviso:30,lab:'MEYLAB',certificados:[]},
+  {id:'eq5',equipo:'Luxómetro',marca:'Extech Instruments',modelo:'407026',serie:'A.048158',inventario:'2020120010',ultima:'2022-01-06',meses:12,aviso:30,lab:'',certificados:[]},
+  {id:'eq6',equipo:'Luxómetro',marca:'Extech Instruments',modelo:'407026',serie:'Q643645',inventario:'2012010013',ultima:'2022-05-27',meses:12,aviso:30,lab:'',certificados:[]},
+  {id:'eq7',equipo:'Monitor de Stress Térmico',marca:'Quest Technologies',modelo:'QUEST temp*32',serie:'TPL110012',inventario:'2012010014',ultima:'2025-09-02',meses:12,aviso:30,lab:'CENIT',certificados:[]},
+  {id:'eq8',equipo:'Termometro de Tem. Abatidas',marca:'KESSLER',modelo:'ASTM 114C-86',serie:'799763',inventario:'2015010255',ultima:'2025-07-17',meses:12,aviso:30,lab:'SIMCA',certificados:[]},
+  {id:'eq9',equipo:'Anemometro',marca:'CEM',modelo:'DT-8897',serie:'889701/1308113433',inventario:'2014010116',ultima:'2025-09-02',meses:12,aviso:30,lab:'ICEMA',certificados:[]},
+  {id:'eq10',equipo:'Luxómetro',marca:'LUTRON',modelo:'LX-1108',serie:'T.048053',inventario:'2022010063',ultima:'2022-08-15',meses:12,aviso:30,lab:'',certificados:[]},
+  {id:'eq11',equipo:'Termohigrometro',marca:'CEM',modelo:'DT-321S',serie:'190302639',inventario:'2021010026',ultima:'2025-07-22',meses:12,aviso:30,lab:'CICCSA',certificados:[]},
+  {id:'eq12',equipo:'Luxómetro',marca:'HIOKI',modelo:'FT3424',serie:'221241289',inventario:'2023010087',ultima:'2025-07-24',meses:12,aviso:30,lab:'',certificados:[]},
+  {id:'eq13',equipo:'Bascula 100Kg',marca:'ESHER',modelo:'110-100-4050',serie:'EN7622-ESH27913',inventario:'2017010030',ultima:'2024-02-06',meses:12,aviso:30,lab:'',certificados:[]},
+  {id:'eq14',equipo:'Voltimetro caja negra',marca:'S/M',modelo:'AD16-22VAM',serie:'ICQC08419',inventario:'2022010064',ultima:'2025-02-26',meses:12,aviso:30,lab:'CLAM',certificados:[]},
+  {id:'eq15',equipo:'Voltimetro Anemometro',marca:'',modelo:'',serie:'',inventario:'202410117',ultima:'2024-08-16',meses:12,aviso:30,lab:'CLAM',certificados:[],certPendiente:true}
+];
+
+let equipos = JSON.parse(localStorage.getItem('calibracionesEquipos')||'null') || initialEquipos;
+let config  = JSON.parse(localStorage.getItem('calibracionesConfig')||'{}');
+let _sortCol = 'vencimiento', _sortDir = 1;
+
+function save(){ localStorage.setItem('calibracionesEquipos', JSON.stringify(equipos)); }
+function today(){ const d=new Date(); d.setHours(0,0,0,0); return d; }
+function addMonths(dateStr, months){
+  const d=new Date(dateStr+'T00:00:00'), day=d.getDate();
+  d.setMonth(d.getMonth()+Number(months));
+  if(d.getDate()<day) d.setDate(0);
+  return d;
+}
+function fmt(d){ return d.toISOString().slice(0,10); }
+function daysUntil(d){ return Math.ceil((d - today()) / 86400000); }
+function estado(e){
+  const v=addMonths(e.ultima,e.meses), dias=daysUntil(v);
+  if(dias<0)  return ['Vencido','vencido'];
+  if(dias<=Number(e.aviso||30)) return ['Calibrar ya','calibrar'];
+  if(dias<=60) return ['Próximo a vencer','proximo'];
+  return ['Con tiempo','tiempo'];
+}
+function gcalUrl(e, tipo){
+  const venc=addMonths(e.ultima,e.meses);
+  const fecha=tipo==='aviso'?new Date(venc.getTime()-Number(e.aviso||30)*86400000):venc;
+  const start=fmt(fecha).replaceAll('-','');
+  const end=new Date(fecha); end.setDate(end.getDate()+1);
+  const title='Enviar a calibrar: '+e.equipo;
+  const details=`Equipo: ${e.equipo}\nMarca: ${e.marca||''}\nModelo: ${e.modelo||''}\nSerie: ${e.serie||''}\nLAB: ${e.lab||''}`;
+  return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${start}/${fmt(end).replaceAll('-','')}&details=${encodeURIComponent(details)}`;
+}
+
+/* ══════ CLOCK ══════ */
+function updateClock(){
+  const now=new Date();
+  const opts={day:'numeric',month:'long',year:'numeric'};
+  document.getElementById('display-date').textContent = now.toLocaleDateString('es-MX',opts);
+  document.getElementById('display-time').textContent = now.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
+  const fmt2=(d)=>d.toLocaleDateString('es-MX',{day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('footer-date').textContent = 'Los días se calculan respecto a la fecha actual: '+fmt2(now);
+}
+
+/* ══════ LAB FILTER POPULATE ══════ */
+function populateLabFilter(){
+  const sel=document.getElementById('fLab');
+  const labs=[...new Set(equipos.map(e=>e.lab||'Sin laboratorio'))].sort();
+  const cur=sel.value;
+  sel.innerHTML='<option value="">Todos</option>';
+  labs.forEach(l=>{ const o=document.createElement('option'); o.value=l; o.textContent=l; sel.appendChild(o); });
+  sel.value=cur;
+}
+
+/* ══════ CLEAR FILTERS ══════ */
+function clearFilters(){
+  document.getElementById('q').value='';
+  document.getElementById('fEstado').value='';
+  document.getElementById('sort').value='vencimiento';
+  document.getElementById('fLab').value='';
+  _sortCol='vencimiento'; _sortDir=1;
+  render();
+}
+
+/* ══════ SORT COLUMN ══════ */
+function sortCol(col){
+  if(_sortCol===col) _sortDir*=-1; else { _sortCol=col; _sortDir=1; }
+  render();
+}
+
+/* ══════ RENDER ══════ */
+function render(){
+  const q=document.getElementById('q').value.toLowerCase();
+  const f=document.getElementById('fEstado').value;
+  const s=document.getElementById('sort').value;
+  const fLab=document.getElementById('fLab').value;
+
+  let rows=equipos.map(e=>({
+    ...e,
+    venc:addMonths(e.ultima,e.meses),
+    est:estado(e),
+    labDisplay:e.lab||'Sin laboratorio'
+  }))
+  .filter(e=>!q||Object.values(e).join(' ').toLowerCase().includes(q))
+  .filter(e=>!f||e.est[0]===f)
+  .filter(e=>!fLab||(e.labDisplay===fLab));
+
+  // Sort
+  const col=_sortCol||s;
+  rows.sort((a,b)=>{
+    let va,vb;
+    if(col==='vencimiento'||col==='dias'){ va=a.venc; vb=b.venc; }
+    else if(col==='estado'){ va=a.est[0]; vb=b.est[0]; }
+    else if(col==='lab'){ va=a.labDisplay; vb=b.labDisplay; }
+    else if(col==='meses'){ va=a.meses; vb=b.meses; }
+    else { va=String(a[col]||''); vb=String(b[col]||''); }
+    if(va<vb) return -_sortDir;
+    if(va>vb) return _sortDir;
+    return 0;
+  });
+
+  document.getElementById('tbody').innerHTML = rows.map(e=>{
+    const dias=daysUntil(e.venc);
+    const estClass=e.est[1];
+
+    // Vencimiento color class
+    const cv=estClass;
+
+    // Days color
+    let dc='ok';
+    if(dias<0) dc='neg';
+    else if(dias<=30) dc='warn';
+    else if(dias<=60) dc='near';
+
+    // Cert cell
+    let certHtml;
+    if(e.certLink){
+      certHtml=`<a class="cert-drive-btn" href="${e.certLink}" target="_blank" rel="noopener noreferrer">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/></svg>
+        ${e.certNombre||'Ver certificado'}
+      </a>`;
+    } else {
+      certHtml=`<span class="no-cert">Sin certificado</span>`;
+    }
+
+    return `<tr>
+      <td><span class="pill ${estClass}">${e.est[0]}</span></td>
+      <td><b>${e.equipo}</b></td>
+      <td>${e.marca||''}<br><span class="sm">${e.modelo||''}</span></td>
+      <td style="font-size:12px">${e.serie||''}</td>
+      <td style="font-size:12px">${e.inventario||''}</td>
+      <td>${e.ultima}</td>
+      <td>${e.meses} meses</td>
+      <td><b class="cv ${cv}">${fmt(e.venc)}</b></td>
+      <td><span class="dv ${dc}">${dias}</span></td>
+      <td><span style="font-size:13px">${e.labDisplay}</span></td>
+      <td>${certHtml}</td>
+      <td>
+        <div class="abtns">
+          <button class="ib view" title="Ver detalles" onclick="openForm('${e.id}')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+          <a class="ib cal" title="Aviso 30 días antes del vencimiento" target="_blank" href="${gcalUrl(e,'aviso')}">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          </a>
+          <button class="ib upl" title="Agregar enlace de certificado" onclick="openLinkDialog('${e.id}')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
+          </button>
+          <button class="ib edit" title="Editar equipo" onclick="openForm('${e.id}')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </button>
+          <button class="ib del" title="Eliminar equipo" onclick="delEquipo('${e.id}')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+          </button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+
+  renderKpis();
+  renderCerts();
+}
+
+/* ══════ KPIs ══════ */
+function renderKpis(){
+  const C={'Vencido':0,'Calibrar ya':0,'Próximo a vencer':0,'Con tiempo':0};
+  equipos.forEach(e=>C[estado(e)[0]]++);
+  const meta=[
+    {k:'Vencido',      c:'red',    icon:'⏰', desc:'Equipos vencidos'},
+    {k:'Calibrar ya',  c:'purple', icon:'⚠️',  desc:'Calibrar de inmediato'},
+    {k:'Próximo a vencer',c:'amber',icon:'🕐', desc:'En los próximos 30 días'},
+    {k:'Con tiempo',   c:'green',  icon:'✅', desc:'Aún con tiempo'}
+  ];
+  document.getElementById('kpis').innerHTML=meta.map(m=>`
+    <div class="kpi-card">
+      <div class="kpi-title">${m.k}</div>
+      <div class="kpi-body">
+        <div class="kpi-icon ${m.c}">${m.icon}</div>
+        <div class="kpi-num">${C[m.k]}</div>
+      </div>
+      <div class="kpi-desc">${m.desc}</div>
+      <div class="kpi-bar ${m.c}"></div>
+    </div>`).join('');
+  // Sidebar stats
+  const ids=['sv1','sv2','sv3','sv4'];
+  const keys=['Vencido','Calibrar ya','Próximo a vencer','Con tiempo'];
+  ids.forEach((id,i)=>document.getElementById(id).textContent=C[keys[i]]);
+}
+
+/* ══════ CERTS ══════ */
+function renderCerts(){
+  const conLink=equipos.filter(e=>e.certLink);
+  let html='';
+  conLink.forEach(e=>{
+    html+=`<div class="certItem">
+      <div>
+        <b>${e.equipo}</b>
+        <div class="sm">${e.certNombre||'Certificado'} · ${e.marca||''} ${e.modelo||''}</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <a class="btn btn-primary" href="${e.certLink}" target="_blank" rel="noopener" style="font-size:12px;padding:6px 14px">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Abrir en Drive
+        </a>
+        <button class="btn" style="background:#1e2d42;border:1px solid var(--line);font-size:12px;padding:6px 12px;color:#94a3b8" onclick="openLinkDialog('${e.id}')">Editar enlace</button>
+        <button class="btn" style="background:#2d0f0f;border:1px solid #7f1d1d;color:#f87171;font-size:12px;padding:6px 12px" onclick="deleteCertLink('${e.id}')">Quitar</button>
+      </div>
+    </div>`;
+  });
+  document.getElementById('certList').innerHTML=html||'<p class="sm" style="padding:8px 0">Aún no hay certificados vinculados. Usa el botón ☁ en cada equipo para agregar el enlace de Google Drive.</p>';
+}
+
+/* ══════ CERT LINK DIALOG ══════ */
+function openLinkDialog(id){
+  const e=equipos.find(x=>x.id===id)||{};
+  document.getElementById('dlgLinkId').value=id;
+  document.getElementById('dlgLinkUrl').value=e.certLink||'';
+  document.getElementById('dlgLinkNombre').value=e.certNombre||'';
+  document.getElementById('dlgLinkQuitar').style.display=e.certLink?'inline-flex':'none';
+  dlgLink.showModal();
+}
+function saveCertLink(){
+  const id=document.getElementById('dlgLinkId').value;
+  const url=document.getElementById('dlgLinkUrl').value.trim();
+  const nombre=document.getElementById('dlgLinkNombre').value.trim();
+  const e=equipos.find(x=>x.id===id); if(!e)return;
+  e.certLink=url; e.certNombre=nombre;
+  save(); dlgLink.close(); render();
+}
+function deleteCertLink(id){
+  if(!confirm('¿Quitar el enlace de certificado de este equipo?')) return;
+  const e=equipos.find(x=>x.id===id); if(!e)return;
+  e.certLink=''; e.certNombre='';
+  save(); render();
+}
+function delEquipo(id){ if(confirm('¿Eliminar este equipo?')){ equipos=equipos.filter(e=>e.id!==id); save(); populateLabFilter(); render(); }}
+function showTab(t){
+  ['lista','certificados'].forEach(x=>{
+    document.getElementById('tab-'+x).classList.toggle('hidden',x!==t);
+    document.getElementById('tbtn-'+x).classList.toggle('active',x===t);
+  });
+}
+
+/* ══════ NAV ══════ */
+function navTo(target){
+  ['dashboard','lista','certificados','respaldos'].forEach(n=>{
+    const el=document.getElementById('nav-'+n);
+    if(el) el.classList.toggle('active',n===target);
+  });
+  if(target==='lista')             showTab('lista');
+  else if(target==='certificados') showTab('certificados');
+  else if(target==='respaldos')    exportBackup();
+  else                             showTab('lista'); // dashboard
+}
+
+/* ══════ FORM ══════ */
+function openForm(id){
+  const e=id?equipos.find(x=>x.id===id):{};
+  document.getElementById('dlgTitle').textContent=id?'Editar equipo':'Agregar equipo';
+  ['equipo','marca','modelo','serie','inventario','lab','ultima','meses','aviso','notas','certLink','certNombre'].forEach(k=>{
+    const el=document.getElementById(k); if(el) el.value=e[k]||'';
+  });
+  document.getElementById('editId').value=e.id||'';
+  if(!id){ document.getElementById('meses').value=12; document.getElementById('aviso').value=30; }
+  dlg.showModal();
+}
+
+function saveEquipo(ev){
+  ev.preventDefault();
+  const id=document.getElementById('editId').value||('eq'+Date.now());
+  let e=equipos.find(x=>x.id===id)||{id};
+  Object.assign(e,{
+    equipo:equipo.value,marca:marca.value,modelo:modelo.value,
+    serie:serie.value,inventario:inventario.value,lab:lab.value,
+    ultima:ultima.value,meses:Number(meses.value),aviso:Number(aviso.value),notas:notas.value,
+    certLink:document.getElementById('certLink').value.trim(),
+    certNombre:document.getElementById('certNombre').value.trim()
+  });
+  if(!equipos.some(x=>x.id===id)) equipos.push(e);
+  save(); dlg.close(); populateLabFilter(); render();
+}
+
+/* ══════ BACKUP ══════ */
+function exportBackup(){
+  const blob=new Blob([JSON.stringify({equipos,config,fecha:new Date().toISOString()},null,2)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='respaldo_calibraciones.json'; a.click();
+}
+async function importBackup(ev){
+  const file=ev.target.files[0]; if(!file)return;
+  const data=JSON.parse(await file.text());
+  equipos=data.equipos||data; config=data.config||{};
+  save(); localStorage.setItem('calibracionesConfig',JSON.stringify(config));
+  populateLabFilter(); render();
+}
+/* ══════ INIT ══════ */
+window.onload=()=>{
+  updateClock();
+  setInterval(updateClock,60000);
+  populateLabFilter();
+  render();
+};
+</script>
+</body>
+</html>
